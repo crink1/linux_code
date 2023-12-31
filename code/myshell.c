@@ -2,13 +2,26 @@
 #include<unistd.h>
 #include<sys/types.h>
 #include<sys/wait.h>
+#include<sys/stat.h>
 #include<string.h>
 #include<stdlib.h>
+#include<fcntl.h>
+#include<ctype.h>
 
 #define NUM 1024
 #define SIZE 64
 #define SEP " "
-#define Debug 1
+//#define Debug 1
+
+//redir
+#define NoneRedir 0
+#define OutputRedir 1
+#define AppendRedir 2
+#define InputRedir 3
+
+int redir = NoneRedir;
+char *filename = NULL;
+
 
 char cwd[1024];
 char enval[1024];
@@ -102,12 +115,27 @@ int execute(char** argv)
   pid_t id = fork();
   if(id == 0)
   {
+    if(redir == InputRedir)
+    {
+      int fd = open(filename,O_RDONLY);
+      dup2(fd,0);
+    }
+    else if(redir == OutputRedir)
+    {
+      int fd = open(filename,O_WRONLY | O_CREAT | O_TRUNC, 0664);
+      dup2(fd,1);
+    }
+    else if(redir == AppendRedir)
+    {
+      int fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0664);
+      dup2(fd,1);
+    }
     execvp(argv[0],argv);
     exit(1);
   }
   else if(id < 0)
   {
-    return -1;
+    return -1; 
   }
   else
   {
@@ -180,11 +208,56 @@ int DoBuildin(char **argv)
   return 0;
 }
 
+#define SkipSpace(pos) do{while(isspace(*pos)){pos++;}}while(0);
+
+void checkredir(char usercommand[],int len)
+{
+  char *start = usercommand;
+  char *end = usercommand + len - 1;
+  while(end > start)
+  {
+    if(*end == '>')
+    {
+      if(*(end - 1) == '>')
+      {
+        *(end - 1) = '\0';
+        filename = end + 1;
+        SkipSpace(filename);
+        redir = AppendRedir;
+        break;
+      }
+      else
+      {
+        *end = '\0';
+        filename = end + 1;
+        SkipSpace(filename);
+        redir = OutputRedir;
+        break;
+      }
+    }
+    else if(*end == '<')
+    {
+      *end = '\0';
+      filename = end + 1;
+      SkipSpace(filename);
+      redir = InputRedir;
+      break;
+    }
+    else
+    {
+      end--;
+    }
+  }
+}
+
+
 
 int main()
 {
   while(1)
   {
+    redir = NoneRedir;
+    filename = NULL;
     char entercommand[NUM];
     char *argv[SIZE];
 
@@ -194,6 +267,8 @@ int main()
    {
      continue;
    }
+   //判断是否有重定向
+   checkredir(entercommand,strlen(entercommand));
 
     //分割字符串
     

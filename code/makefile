@@ -1,5 +1,5 @@
-shellprocess:myshell.c
+myshell:myshell.c
 	g++ -o $@ $^
 .PHONY:clean
 clean:
-	rm -rf shellprocess
+	rm -rf myshell

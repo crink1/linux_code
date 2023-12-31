@@ -1,5 +1,5 @@
-myprocess:code.c
+mycode:code.c
 	g++ -o $@ $^
 .PHONY:clean
 clean:
-	rm -f myprocess
+	rm -f mycode
