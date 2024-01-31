@@ -1,5 +1,5 @@
-myshell:myshell.c
-	g++ -o $@ $^
+test:mypipe.cc
+	g++ -o $@ $^ -std=c++11
 .PHONY:clean
 clean:
-	rm -rf myshell
+	rm -rf test

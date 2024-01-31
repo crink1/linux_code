@@ -48,22 +48,32 @@
 //
 //  return 0;
 //}
+//int main()
+//{
+//  FILE* fd = fopen("bite.txt","w+");
+//  if(fd == NULL)
+//  {
+//    printf("fopen error\n");
+//  }
+//  const char* str = "linux so easy!\n";
+//  
+//  fputs(str,fd);
+//  fclose(fd);
+//
+//  FILE* fd1 = fopen("bite.txt","r");
+//  char buff[1024];
+//  fgets(buff,1024,fd1);
+//  fclose(fd1);
+//  printf("%s",buff);
+//  return 0;
+//}
+#include<stdio.h>
+#define Mul(x,y) ++x*++y
 int main()
 {
-  FILE* fd = fopen("bite.txt","w+");
-  if(fd == NULL)
-  {
-    printf("fopen error\n");
-  }
-  const char* str = "linux so easy!\n";
-  
-  fputs(str,fd);
-  fclose(fd);
-
-  FILE* fd1 = fopen("bite.txt","r");
-  char buff[1024];
-  fgets(buff,1024,fd1);
-  fclose(fd1);
-  printf("%s",buff);
-  return 0;
+	int a = 1;
+	int b = 2;
+	int c = 3;
+	printf("%d", Mul(a + b, b + c));
+	return 0;
 }
