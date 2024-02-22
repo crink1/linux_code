@@ -17,7 +17,6 @@ void* Productor(void* args)
     while(1)
     {
        
-
         int data1 = rand() % 10 + 1;
         int data2 = rand() % 10;
         Task t(data1, data2, operators[rand() % operators.size()]);
@@ -37,16 +36,11 @@ void* Consumer(void* args)
 
     while(true)
     {
-       
-
         Task t;
         rq->pop(&t);
         t();
         cout << "处理任务: " << t.GetTask() << " 运算结果是： " << t.GetResult() << " thread id: " << pthread_self() << endl;
         sleep(1);
-        
-
-
     }
 
 }
