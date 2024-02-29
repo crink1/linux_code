@@ -30,28 +30,40 @@ int main(int argc, char *argv[])
     server.sin_port = htons(serverport);
     inet_pton(AF_INET, serverip.c_str(), &(server.sin_addr));
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-    {
-        std::cerr << "socket error" << std::endl;
-        return 1;
-    }
-
-    int n = connect(sockfd, (struct sockaddr *)(&server), sizeof(server));
-    if (n < 0)
-    {
-        std::cerr << "connect error..." << std::endl;
-        
-    }
-
     while (true)
     {
+        int linkcnt = 5;
+        bool islink = false;
+        int sockfd = 0;
+        sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if (sockfd < 0)
+        {
+            std::cerr << "socket error" << std::endl;
+            return 1;
+        }
+
+        do
+        {
+            int n = connect(sockfd, (struct sockaddr *)(&server), sizeof(server));
+            if (n < 0)
+            {
+                islink = true;
+                linkcnt--;
+                std::cerr << "connect error..." << std::endl;
+                sleep(1);
+            }
+            else
+            {
+                break;
+            }
+
+        } while (linkcnt && islink);
 
         string msg;
         cout << "Enter :";
         getline(cin, msg);
 
-        n = write(sockfd, msg.c_str(), msg.size());
+        int n = write(sockfd, msg.c_str(), msg.size());
         if (n < 0)
         {
             std::cerr << "write error..." << std::endl;
@@ -65,8 +77,10 @@ int main(int argc, char *argv[])
             buffer[n] = 0;
             cout << buffer << endl;
         }
+
+        close(sockfd);
     }
-    close(sockfd);
+   
 
     return 0;
 }
