@@ -11,6 +11,7 @@
 #include <signal.h>
 #include "ThreadPool.hpp"
 #include "Task.hpp"
+#include "Daemon.hpp"
 
 const int defaultfd = -1;
 const std::string defaultip = "0.0.0.0";
@@ -94,6 +95,7 @@ public:
     void launch()
     {
 
+        Daemon();
         std::cout << "tcpserver launch" << std::endl;
         threadpool<Task>::getinstance()->launch();
 
