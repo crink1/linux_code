@@ -95,7 +95,7 @@ public:
     void launch()
     {
 
-        Daemon();
+        //Daemon();
         std::cout << "tcpserver launch" << std::endl;
         threadpool<Task>::getinstance()->launch();
 
