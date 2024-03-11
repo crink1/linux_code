@@ -13,7 +13,7 @@
 #include "Socket.hpp"
 #include "Log.hpp"
 
-const std::string webroot = "./webroot";
+const std::string webroot = "./webroot/sign";
 const std::string sep = "\r\n";
 const std::string homepage = "index.html";
 
@@ -202,16 +202,17 @@ public:
             std::string str;
             bool f = true;
             str = ReadHtmlContent(hreq.file_path);
+            
             if(str.empty())
             {
                 f = false;
                 std::string err = webroot;
                 err += "/";
                 err += "err.html";
-                str = ReadHtmlContent("err.html");
+                str = ReadHtmlContent(err);
 
             }
-
+            
             std::string res_line;
             if(f)
             {
